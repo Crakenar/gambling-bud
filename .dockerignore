@@ -1,0 +1,12 @@
+node_modules
+build
+npm-debug.log
+
+#ignore IDE
+.idea
+.vscode
+
+#ignore docker
+Dockerfile
+.dockerignore
+docker-compose.yml

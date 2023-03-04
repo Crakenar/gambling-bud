@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  # MongoDB services
+  gambling_mongo_db:
+    container_name: mongo_db #optional
+    image: mongo:latest #should we specify a specific version ?
+    restart: always
+    ports:
+      - "2717:27017"
+    volumes:
+      - gambling_mongo_db:/data/db
+
+  # Node services
+  node_api:
+    container_name: api_gambling #optional
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "3333:3000"
+    volumes:
+      - .:/app
+    environment:
+      PORT: 3000
+      MONGODB_URI: mongodb://mongo_db:27017
+      DB_NAME: gambling_db
+    depends_on:
+      - gambling_mongo_db
+
+volumes:
+  gambling_mongo_db: {}
+
