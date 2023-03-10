@@ -2,14 +2,16 @@ version: "3"
 
 services:
   # MongoDB services
-  gambling_mongo_db:
-    container_name: mongo_db #optional
+  mongo:
+    container_name: mongo
     image: mongo:latest #should we specify a specific version ?
     restart: always
     ports:
-      - "2717:27017"
+      - "27017:27017"
     volumes:
-      - gambling_mongo_db:/data/db
+      - mongo:/data/db
+    networks:
+      - graphql-express
 
   # Node services
   node_api:
@@ -20,13 +22,16 @@ services:
       - "3333:3000"
     volumes:
       - .:/app
-    environment:
-      PORT: ENV
-      MONGODB_URI: mongodb://mongo_db:27017
-      DB_NAME: gambling_db
+    links:
+      - mongo
     depends_on:
-      - gambling_mongo_db
+      - mongo
+    networks:
+      - graphql-express
 
 volumes:
-  gambling_mongo_db: {}
+  mongo: {}
+
+networks:
+  graphql-express:
 
