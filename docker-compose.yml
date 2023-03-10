@@ -10,8 +10,6 @@ services:
       - "27017:27017"
     volumes:
       - mongo:/data/db
-    networks:
-      - graphql-express
 
   # Node services
   node_api:
@@ -19,19 +17,14 @@ services:
     build:
       dockerfile: Dockerfile
     ports:
-      - "3333:3000"
+      - "4001:4000"
     volumes:
       - .:/app
-    links:
-      - mongo
+    env_file:
+      - .env
     depends_on:
       - mongo
-    networks:
-      - graphql-express
 
 volumes:
   mongo: {}
-
-networks:
-  graphql-express:
 
