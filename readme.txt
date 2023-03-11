@@ -4,3 +4,6 @@
 
 
 - Install Compass
+
+express-session : https://www.npmjs.com/package/express-session
+passport google oauth2 = http://www.passportjs.org/packages/passport-google-oauth2/
