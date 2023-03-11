@@ -4,7 +4,10 @@ ENV NODE_ENV=production
 WORKDIR /app
 
 #Copy the files into the workdir
-COPY package*.json .
+COPY package*.json ./
+
+#check if it is possible to install it only in dev environment
+RUN npm install -g nodemon
 
 #'npm install' bad practice => possible problems
 RUN npm ci

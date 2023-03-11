@@ -19,7 +19,9 @@ services:
     ports:
       - "4001:4000"
     volumes:
-      - .:/app
+      - ./:/app
+      - /app/node_modules
+    working_dir: /app
     env_file:
       - .env
     depends_on:

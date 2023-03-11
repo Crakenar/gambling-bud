@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 import User from "../users/User";
 
-const GambleSchema = new Schema({
+const Gamble = new Schema({
     name: {
         type: String,
         required: true
@@ -22,5 +22,5 @@ const GambleSchema = new Schema({
     }
 });
 
-const GambleSchema = mongoose.model('users', GambleSchema);
+const GambleSchema = mongoose.model('gambles', Gamble);
 module.exports = GambleSchema;
