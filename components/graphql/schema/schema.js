@@ -1,6 +1,6 @@
-const ClientMutations = require('../../clients/ClientMutations');
+const GamblerMutations = require('../../gamblers/GamblerMutations');
 const ProjectMutations = require('../../projects/ProjectMutations');
-const ClientQueries = require('../../clients/ClientQueries');
+const GamblerQueries = require('../../gamblers/GamblerQueries');
 const ProjectQueries = require('../../projects/ProjectQueries');
 
 const { GraphQLObjectType, GraphQLSchema} = require('graphql');
@@ -8,7 +8,7 @@ const { GraphQLObjectType, GraphQLSchema} = require('graphql');
 const Query = new GraphQLObjectType({
    name: 'Query',
    fields: {
-        ...ClientQueries,
+        ...GamblerQueries,
        ...ProjectQueries
    }
 });
@@ -17,7 +17,7 @@ const Query = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
-        ...ClientMutations,
+        ...GamblerMutations,
         ...ProjectMutations
     }
 })

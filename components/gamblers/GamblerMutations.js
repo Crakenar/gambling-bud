@@ -1,34 +1,34 @@
-const ClientType = require("./ClientSchema");
+const GamblerType = require("./GamblerSchema");
 const {GraphQLNonNull, GraphQLString, GraphQLID} = require("graphql");
-const Client = require("./Client");
+const Gambler = require("./Gambler");
 
-const ClientMutations = {
+const GamblerMutations = {
     addClient: {
-        type: ClientType,
+        type: GamblerType,
         args: {
             name: { type: GraphQLNonNull(GraphQLString) },
             email: { type: GraphQLNonNull(GraphQLString) },
             phone: { type: GraphQLNonNull(GraphQLString) },
         },
         resolve(parent, args) {
-            const client = new Client({
+            const gambler = new Gambler({
                 name: args.name,
                 email: args.email,
                 phone: args.phone
             });
-            return client.save()
-            //Client.create(client);
+            return gambler.save()
+            //Gambler.create(gambler);
         }
     },
-    deleteClient: {
-        type: ClientType,
+    deleteGambler: {
+        type: GamblerType,
         args: {
             id: { type: GraphQLNonNull(GraphQLID) }
         },
         resolve(parent, args) {
-            return Client.findByIdAndRemove(args.id)
+            return Gambler.findByIdAndRemove(args.id)
         }
     },
 }
 
-module.exports = ClientMutations
+module.exports = GamblerMutations

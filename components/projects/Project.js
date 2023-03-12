@@ -13,9 +13,9 @@ const ProjectSchema = new mongoose.Schema({
     },
     clientId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Client',
+        ref: 'Gambler',
     }
 });
 
 //plural not needed but i want it :uwu
-module.exports = mongoose.model('Projects', ProjectSchema);
+module.exports = mongoose.model('Project', ProjectSchema);
