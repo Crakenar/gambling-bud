@@ -1,7 +1,10 @@
 const express = require('express');
 const session = require('express-session');
 const {graphqlHTTP} = require("express-graphql");
+const mongoose = require('mongoose');
 require('dotenv').config();
+const cors = require('cors');
+const authRoute = require("./routes/auth");
 
 const schema = require('./components/graphql/schema/schema');
 const port = process.env.NODE_DOCKER_PORT || 4000;
@@ -9,6 +12,10 @@ require('./auth');
 const connectDB = require('./db');
 const passport = require("passport");
 
+const  corsOptions = {
+    origin: ['http://127.0.0.1:5173', 'http://localhost:5173'],
+    credentials: true,
+};
 const app = express();
 
 let sess = {
@@ -27,7 +34,8 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session(sess));
-
+app.use(cors(corsOptions));
+app.use("/", authRoute);
 
 function isLoggedIn(req, res, next) {
     req.user ? next() : res.sendStatus(401);
@@ -40,31 +48,16 @@ app.use('/graphql', graphqlHTTP({
     schema,
     graphiql: process.env.NODE_ENV === 'development'
 }));
-
-app.get('/', (req, res) => res.send('<a href="/auth/google"> Authenticate with google </a>'));
-
-app.get('/auth/google', passport.authenticate('google', {scope: ['email', 'profile']}));
-app.get('/google/callback', passport.authenticate('google', {
-    successRedirect: '/logged',
-    failureRedirect: '/auth/failure'
-}));
-
-app.get('/auth/failure', (req, res) => res.send('something went wrong'));
-app.get('/logged', (req, res) => {
-    res.send(`Logged in as ${req.user.displayName}`);
-});
-
-app.get('/logout', (req, res) => {
-    req.logout(function(err) {
-        if (err) { return next(err); }
-        req.session.destroy();
-        res.redirect('/');
-    });
-});
+app.get('/', (req, res) => res.send('<a href="/google"> Authenticate with google </a>'));
 
 app.get('/protected', isLoggedIn, (req, res) => {
     res.send('Logged in');
 });
+
+// app.get('/getCollections', (req, res) => {
+//     const data = mongoose.modelNames();
+//     res.send(JSON.stringify(data));
+// });
 
 
 app.listen(port, () => {
