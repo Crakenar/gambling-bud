@@ -2,7 +2,7 @@
   <transition name="fade">
     <div v-if="props.openModal" class="absolute z-0 top-56 left-[40%]">
       <div
-          class="w-full max-w-lg p-3 relative mx-auto my-auto rounded-xl shadow-lg bg-white"
+          class="w-full max-w-lg p-3 relative mx-auto my-auto rounded-xl shadow-lg bg-gray-300"
       >
         <div>
           <div class="text-center p-3 flex-auto justify-center leading-6">

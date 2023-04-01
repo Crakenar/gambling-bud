@@ -1,5 +1,5 @@
 <template>
-  <LoadingPage loading="true" is-component="false">
+  <LoadingPage :loading="true" :is-component="true">
     <div>NOTIFCATIONS</div>
   </LoadingPage>
 </template>

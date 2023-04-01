@@ -72,11 +72,17 @@
 import AuthService from "@/services/AuthService";
 import {Icon} from "@iconify/vue";
 import {useConfigStore} from "@/stores/configStore";
+import {useAuthenticateStore} from "@/stores/authStore";
 
 const configStore = useConfigStore();
-const {widthIcon} = configStore;
+const authStore = useAuthenticateStore();
 
+const {widthIcon} = configStore;
+const { setIsAuthenticated } = authStore;
 const logout = () => {
+  //TODO Put it in AuthService
+  // cannot use it in class so i do it here
+  setIsAuthenticated(false);
   AuthService.logout();
 }
 </script>

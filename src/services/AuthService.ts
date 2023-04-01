@@ -1,4 +1,5 @@
 import http from "./http-common";
+import {useAuthenticateStore} from "@/stores/authStore";
 
 class AuthService {
     login() {

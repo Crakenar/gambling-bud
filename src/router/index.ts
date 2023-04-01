@@ -7,6 +7,8 @@ import HomeView from '../views/HomeView.vue'
 import Dashboard from "@/components/Dashboard/Dashboard.vue";
 import DashboardView from "@/views/DashboardView.vue";
 import {NavigationEnum} from "@/Enum/NavigationEnum";
+import {useAuthenticateStore} from "@/stores/authStore";
+import {storeToRefs} from "pinia";
 //
 
 
@@ -88,9 +90,15 @@ router.beforeEach( async (to, from, next) => {
   if (to.name != 'home') {
     await AuthService.checkAuthenticated().then(res => {
       const userStore = useUserStore();
-      const { setUser, checkIfUserNull } = userStore;
+      const authStore = useAuthenticateStore();
+      const { setUser } = userStore;
+      const { user } = storeToRefs(userStore);
+      const { setIsAuthenticated, checkIfAuthenticated } = authStore;
       if (res.data.success) {
-        if (checkIfUserNull()) { //pb if changing data
+        if (!checkIfAuthenticated()) {
+          setIsAuthenticated(true)
+        }
+        if (user !== res.data.data){
           setUser(res.data.data);
         }
         next();
