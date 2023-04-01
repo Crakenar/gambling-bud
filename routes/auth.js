@@ -50,7 +50,6 @@ router.get("/login/failed", (req, res) => {
 router.post("/logout", (req, res, next) => {
     req.logout(function(err) {
         if (err) { return next(err); }
-        console.log('here');
         res.clearCookie('token');
         return res.json({
             success: true,
