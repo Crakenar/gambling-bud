@@ -1,6 +1,6 @@
 <template>
   <div class="top-0 z-40">
-    <div class="w-full h-20 px-6 border-b flex items-center justify-between">
+    <div class="w-full h-20 px-6 flex items-center justify-between">
       <!-- left navbar -->
       <div class="flex">
         <HelloUser :name="getDisplayName()" />

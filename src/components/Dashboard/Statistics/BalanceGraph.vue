@@ -1,8 +1,11 @@
 <template>
-  <Line :data="data" :options="options" />
+  <LoadingPage :loading="false" :is-component="true">
+    <Line :data="data" :options="options" />
+  </LoadingPage>
 </template>
 
 <script setup lang="ts">
+import LoadingPage from "@/components/Widgets/LoadingPage.vue";
 import {
   Chart as ChartJS,
   CategoryScale,

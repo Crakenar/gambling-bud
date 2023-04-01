@@ -1,8 +1,11 @@
 <template>
-  <Radar :data="data" :options="options" />
+  <LoadingPage :loading="true" :is-component="true">
+    <Radar :data="data" :options="options" />
+  </LoadingPage>
 </template>
 
 <script setup lang="ts">
+import LoadingPage from "@/components/Widgets/LoadingPage.vue";
 import {
   Chart as ChartJS,
   RadialLinearScale,

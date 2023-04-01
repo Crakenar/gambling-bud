@@ -1,9 +1,12 @@
 <template>
-<div>GAMES</div>
+  <LoadingPage :loading="true" :is-component="true">
+    <div>GAMES</div>
+  </LoadingPage>
 </template>
 
 <script setup lang="ts">
 
+import LoadingPage from "@/components/Widgets/LoadingPage.vue";
 </script>
 
 <style scoped>
