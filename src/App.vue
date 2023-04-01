@@ -2,7 +2,7 @@
   <div class="leading-normal tracking-normal" id="main-body">
     <div class="flex flex-wrap">
       <SideBar v-if="showSideBar"/>
-      <div class="w-full pl-0 lg:pl-64 min-h-screen" id="main-content">
+      <div class="w-full pl-0 sm:pl-64 lg:pl-64 min-h-screen" id="main-content">
         <Navbar v-if="showNavbar" />
         <RouterView/>
       </div>
