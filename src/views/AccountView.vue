@@ -1,9 +1,8 @@
 <template>
-  <Dashboard/>
+<div>ACCOUNT</div>
 </template>
 
 <script setup lang="ts">
-import Dashboard from "@/components/Dashboard/Dashboard.vue";
 </script>
 
 <style scoped>

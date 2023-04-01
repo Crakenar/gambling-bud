@@ -6,6 +6,8 @@ import {useUserStore} from "@/stores/userStore";
 import HomeView from '../views/HomeView.vue'
 import Dashboard from "@/components/Dashboard/Dashboard.vue";
 import DashboardView from "@/views/DashboardView.vue";
+import {NavigationEnum} from "@/Enum/NavigationEnum";
+//
 
 
 const router = createRouter({
@@ -16,13 +18,55 @@ const router = createRouter({
       name: 'home',
       component: HomeView
     },
+    { path: '/', redirect: { name: 'home' } },
     {
-      path: '/about',
-      name: 'about',
+      path: '/dashboard',
+      component: DashboardView,
+      children: [
+        { path: '/', redirect: { name: 'DashboardHome' } },
+        { path: 'home', name: 'DashboardHome', component:  Dashboard}
+      ]
+    },
+    {
+      path: NavigationEnum.DASHBOARD.link,
+      name: NavigationEnum.DASHBOARD.name,
+      component: () => import('../views/AccountView.vue')
+    },
+    {
+      path: NavigationEnum.NOTIFICATION.link,
+      name: NavigationEnum.NOTIFICATION.name,
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: () => import('../views/NotificationsView.vue')
+    },
+    {
+      path: NavigationEnum.ACCOUNT.link,
+      name: NavigationEnum.ACCOUNT.name,
+      component: () => import('../views/AccountView.vue')
+    },
+    {
+      path: NavigationEnum.GAMES.link,
+      name: NavigationEnum.GAMES.name,
+      component: () => import('../views/GamesView.vue')
+    },
+    {
+      path: NavigationEnum.DOCUMENTATION.link,
+      name: NavigationEnum.DOCUMENTATION.name,
+      component: () => import('../views/DocumentationView.vue')
+    },
+    {
+      path: NavigationEnum.COMPONENTS.link,
+      name: NavigationEnum.COMPONENTS.link,
+      component: () => import('../views/ComponentsView.vue')
+    },
+    {
+      path: NavigationEnum.HELP.link,
+      name: NavigationEnum.HELP.name,
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import('../views/HelpView.vue')
     },
     // {
     //   path: '/dashboard',
@@ -32,12 +76,7 @@ const router = createRouter({
     //   // which is lazy-loaded when the route is visited.
     //   component: () => import('../views/DashboardView.vue')
     // },
-    { path: '/', redirect: { name: 'home' } },
-    { path: '/dashboard', component: DashboardView, children: [
-        { path: '/', redirect: { name: 'DashboardHome' } },
-          { path: 'home', name: 'DashboardHome', component:  Dashboard}
-      ]
-    }
+
   ]
 });
 
@@ -51,9 +90,11 @@ router.beforeEach( async (to, from, next) => {
           setUser(res.data.data);
         }
         next();
+        return;
       } else {
         setUser(null);
         next({name: 'home'});
+        return;
       }
     });
   }

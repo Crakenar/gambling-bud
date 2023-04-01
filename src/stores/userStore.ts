@@ -13,11 +13,8 @@ export const useUserStore = defineStore('userStore', () => {
     function checkIfUserNull(): boolean {
         return !user.value;
     }
-    function getDisplayName(): string {
-        if (user.value){
-            return `${user.value?.first_name} ${user.value?.last_name}`;
-        }
-        return 'Undefined'
+    function getDisplayName(): string | null {
+        return `${user.value?.name} ${user.value?.lastname}`;
     }
 
 

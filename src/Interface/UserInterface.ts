@@ -1,6 +1,6 @@
 export interface UserInterface {
-    first_name: string,
-    last_name: string,
+    name: string,
+    lastname: string,
     pictureLink: string,
     email: string,
     balance: number,
