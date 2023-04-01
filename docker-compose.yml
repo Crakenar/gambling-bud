@@ -1,0 +1,11 @@
+version: "3.4"
+services:
+  my_frontend:
+    container_name: gambling_front
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/project
+      - /project/node_modules

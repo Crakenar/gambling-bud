@@ -104,13 +104,7 @@
 import AuthService from "@/services/AuthService";
 
 const googleLogin = () => {
-  window.open(`http://localhost:4001/google/callback`);
-  // AuthService.login().then((res) => {
-  //   console.log(res);
-  // });
-  //   AuthService.authGoogle().then((res) => {
-  //     console.log(res);
-  //   });
+    AuthService.authGoogle();
 };
 
 </script>
