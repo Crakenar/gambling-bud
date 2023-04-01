@@ -1,12 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import AuthService from "@/services/AuthService";
+import {useUserStore} from "@/stores/userStore";
+
+//Components
 import HomeView from '../views/HomeView.vue'
 import Dashboard from "@/components/Dashboard/Dashboard.vue";
 import DashboardView from "@/views/DashboardView.vue";
-import AuthService from "@/services/AuthService";
-import CookieService from "@/services/CookieService";
-import cookieService from "@/services/CookieService";
-import {useUserStore} from "@/stores/userStore";
-import {storeToRefs} from "pinia";
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

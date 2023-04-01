@@ -16,7 +16,11 @@ class AuthService {
     }
 
     logout() {
-        return http.get('/logout');
+        return http.post('/logout', {}, { withCredentials: true }).then(res => {
+            if (res.data.success){
+                location.reload();
+            }
+        });
     }
 }
 

@@ -35,7 +35,7 @@
     <div class="absolute bg-white-100 border border-t-0 shadow-xl text-gray-700 rounded-b-lg w-48 bottom-10 right-0 mr-6" :class="dropDownOpen ? '' : 'hidden'">
       <a href="#" class="block px-4 py-2 hover:bg-gray-200">Account</a>
       <a href="#" class="block px-4 py-2 hover:bg-gray-200">Settings</a>
-      <a href="#" class="block px-4 py-2 hover:bg-gray-200">Logout</a>
+      <a @click="logout" class="block px-4 py-2 hover:bg-gray-200">Logout</a>
     </div>
 
   </div>
@@ -46,9 +46,16 @@
 import {ref} from "vue";
 import {useUserStore} from "@/stores/userStore";
 import {storeToRefs} from "pinia";
+import AuthService from "@/services/AuthService";
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
 const dropDownOpen = ref<boolean>(false);
+
+const logout = () => {
+  AuthService.logout().then(res => {
+    console.log('yop')
+  });
+}
 </script>
 
 <style scoped>
