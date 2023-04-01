@@ -90,15 +90,15 @@ router.beforeEach( async (to, from, next) => {
           setUser(res.data.data);
         }
         next();
-        return;
+        return false;
       } else {
         setUser(null);
         next({name: 'home'});
-        return;
+        return false;
       }
     });
   }
-  return next();
+  return;
 });
 
 export default router
