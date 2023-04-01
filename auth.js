@@ -1,5 +1,6 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
+const User = require("./components/users/User");
 
 passport.use(new GoogleStrategy({
         clientID: process.env.GOOGLE_CLIENT_ID,
@@ -9,8 +10,20 @@ passport.use(new GoogleStrategy({
         scope: ["profile", "email"],
         passReqToCallback: true
     },
-    function (request, accessToken, refreshToken, profile, done) {
-        return done(null, profile);
+    async function (request, accessToken, refreshToken, profile, done) {
+        const query = User.where({ email: profile.email });
+        let user = await User.findOne(query);
+        if (user === null) {
+            user = new User({
+                pseudo: profile.displayName,
+                name: profile.given_name,
+                lastname: profile.family_name,
+                email: profile.emails[0].value,
+                pictureLink: profile.picture
+            });
+            user.save();
+        }
+        return done(null, user);
         // User.findOrCreate({googleId: profile.id}, function (err, user) {
         //     return done(err, user);
         // });

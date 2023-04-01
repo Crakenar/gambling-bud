@@ -1,10 +1,14 @@
+//Libraries
 const express = require('express');
 const session = require('express-session');
-const {graphqlHTTP} = require("express-graphql");
-const mongoose = require('mongoose');
 require('dotenv').config();
 const cors = require('cors');
+const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+/////////////
+const {graphqlHTTP} = require("express-graphql");
 const authRoute = require("./routes/auth");
+const {cookieJwtAuth} = require("./middleware/cookieJwtAuth");
 
 const schema = require('./components/graphql/schema/schema');
 const port = process.env.NODE_DOCKER_PORT || 4000;
@@ -34,12 +38,9 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session(sess));
+app.use(cookieParser());
 app.use(cors(corsOptions));
 app.use("/", authRoute);
-
-function isLoggedIn(req, res, next) {
-    req.user ? next() : res.sendStatus(401);
-}
 
 //connect database
 connectDB().catch(e => console.log(`Erreur conneciton Database ${e}`));
@@ -50,7 +51,7 @@ app.use('/graphql', graphqlHTTP({
 }));
 app.get('/', (req, res) => res.send('<a href="/google"> Authenticate with google </a>'));
 
-app.get('/protected', isLoggedIn, (req, res) => {
+app.get('/dashboard', cookieJwtAuth, (req, res) => {
     res.send('Logged in');
 });
 
