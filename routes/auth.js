@@ -47,10 +47,16 @@ router.get("/login/failed", (req, res) => {
     });
 });
 
-router.get("/logout", (req, res) => {
-    console.log('here')
-    req.logout();
-    res.redirect(process.env.CLIENT_URL);
+router.post("/logout", (req, res, next) => {
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        console.log('here');
+        res.clearCookie('token');
+        return res.json({
+            success: true,
+            message: 'Token revoked'
+        })
+    });
 });
 
 router.get('/checkToken', cookieJwtAuth, (req, res, next) => {

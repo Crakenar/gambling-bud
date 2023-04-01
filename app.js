@@ -5,10 +5,10 @@ require('dotenv').config();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
-/////////////
 const {graphqlHTTP} = require("express-graphql");
+
+/////////////
 const authRoute = require("./routes/auth");
-const {cookieJwtAuth} = require("./middleware/cookieJwtAuth");
 
 const schema = require('./components/graphql/schema/schema');
 const port = process.env.NODE_DOCKER_PORT || 4000;
@@ -49,11 +49,6 @@ app.use('/graphql', graphqlHTTP({
     schema,
     graphiql: process.env.NODE_ENV === 'development'
 }));
-app.get('/', (req, res) => res.send('<a href="/google"> Authenticate with google </a>'));
-
-app.get('/dashboard', cookieJwtAuth, (req, res) => {
-    res.send('Logged in');
-});
 
 // app.get('/getCollections', (req, res) => {
 //     const data = mongoose.modelNames();
