@@ -1,6 +1,6 @@
 <template>
   <transition name="fade">
-    <form class="space-y-4 md:space-y-6" action="#">
+    <div class="space-y-4 md:space-y-6" action="#">
       <div>
         <label for="email" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your email</label>
         <input v-model="registerForm.email" type="email" name="email" id="email"
@@ -44,7 +44,7 @@
       <!--                <p class="text-sm font-light text-gray-500 dark:text-gray-400">-->
       <!--                  Already have an account? <a href="#" class="font-medium text-primary-600 hover:underline dark:text-primary-500">Login here</a>-->
       <!--                </p>-->
-    </form>
+    </div>
   </transition>
 </template>
 
@@ -79,20 +79,21 @@ const checkPassword = () => {
   containsUppercase.value = /[A-Z]/.test(registerForm.value.password);
   containsSpecialCharacter.value = format.test(registerForm.value.password);
 
-  // validPassword.value = containsEightCharacters.value === true &&
-  //     containsSpecialCharacter.value === true &&
-  //     containsUppercase.value === true &&
-  //     containsNumber.value === true &&
-  //     registerForm.value.password === registerForm.value.confirmPassword;
-  validPassword.value = true
+  validPassword.value = containsEightCharacters.value === true &&
+      containsSpecialCharacter.value === true &&
+      containsUppercase.value === true &&
+      containsNumber.value === true &&
+      registerForm.value.password === registerForm.value.confirmPassword;
 }
 
 const register = () => {
   if (validPassword.value) {
     AuthService.register(registerForm.value).then(res => {
       if (res.data.success) {
-        router.push({ path: '/dashboard' })
+        router.replace({ path: '/dashboard' })
       }
+    }).catch(e => {
+      console.log('erreur register', e);
     });
   }
 }

@@ -24,19 +24,19 @@ const router = createRouter({
       },
       component: HomeView
     },
-    { path: '/', redirect: { name: 'home' } },
-    {
-      path: '/dashboard',
-      component: DashboardView,
-      children: [
-        { path: '/', redirect: { name: 'DashboardHome' } },
-        { path: 'home', name: 'DashboardHome', component:  Dashboard}
-      ]
-    },
+    // { path: '/', redirect: { name: 'home' } },
+    // {
+    //   path: '/dashboard',
+    //   component: DashboardView,
+    //   children: [
+    //     { path: '/', redirect: { name: 'DashboardHome' } },
+    //     { path: 'home', name: 'DashboardHome', component:  Dashboard}
+    //   ]
+    // },
     {
       path: NavigationEnum.DASHBOARD.link,
       name: NavigationEnum.DASHBOARD.name,
-      component: () => import('../views/AccountView.vue')
+      component: () => import('../views/DashboardView.vue')
     },
     {
       path: NavigationEnum.NOTIFICATION.link,
@@ -94,6 +94,7 @@ router.beforeEach( async (to, from, next) => {
       const { setUser } = userStore;
       const { user } = storeToRefs(userStore);
       const { setIsAuthenticated, checkIfAuthenticated } = authStore;
+      console.log(res.data)
       if (res.data.success) {
         if (!checkIfAuthenticated()) {
           setIsAuthenticated(true)
