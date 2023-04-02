@@ -3,10 +3,9 @@ const express = require('express');
 const session = require('express-session');
 require('dotenv').config();
 const cors = require('cors');
-const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 const {graphqlHTTP} = require("express-graphql");
-
+const bodyParser = require('body-parser');
 /////////////
 const authRoute = require("./routes/auth");
 
@@ -40,10 +39,12 @@ app.use(passport.initialize());
 app.use(passport.session(sess));
 app.use(cookieParser());
 app.use(cors(corsOptions));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 app.use("/", authRoute);
 
 //connect database
-connectDB().catch(e => console.log(`Erreur conneciton Database ${e}`));
+connectDB().catch(e => console.log(`Error connection Database ${e}`));
 
 app.use('/graphql', graphqlHTTP({
     schema,

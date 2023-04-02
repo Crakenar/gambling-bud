@@ -3,6 +3,8 @@ const passport = require("passport");
 const jwt = require('jsonwebtoken');
 const {cookieJwtAuth} = require("../middleware/cookieJwtAuth");
 const User = require("../components/users/User");
+const bcrypt = require("bcryptjs")
+const saltRounds = 10
 
 
 router.get("/google", passport.authenticate("google", ["profile", "email"]));
@@ -13,7 +15,6 @@ router.get(
         failureRedirect: "/login/failed",
     }), function (req, res) {
         const user = res.req.user;
-        console.log(user)
         // create jsonwebtoken and return it
         const token = jwt.sign(
             user.toJSON(), //needed bc of mongoose
@@ -67,6 +68,51 @@ router.get('/checkToken', cookieJwtAuth, (req, res, next) => {
     });
     // const { token } = req.headers
     // console.log('token', token);
-})
+});
+
+router.post('/login', (req, res) => {
+
+});
+router.post('/register', async (req, res) => {
+    const {email, password} = req.body;
+    const query = User.where({email: email});
+    let user = await User.findOne(query);
+    if (user === null) {
+        //Hashpassword
+        bcrypt.hash(password, saltRounds)
+            .then(hash => {
+                // Create new User
+                user = new User({
+                    email: email,
+                    password: hash,
+                });
+                user.save();
+
+                // create jsonwebtoken and return it
+                const token = jwt.sign(
+                    user.toJSON(),
+                    process.env.JWT_SECRET, // get the secret from default.json to hash jsonwebtoken
+                    { expiresIn: process.env.JWT_EXPIRE_TIME_MINS });
+                res.cookie("token", token, {
+                    httpOnly: false,
+                    // secure: true,
+                    // maxAge: 1000000,
+                    // signed: true
+                });
+                res.status(200).json({
+                    success: true,
+                    message: 'User registered => go into dashboard',
+                    token: token,
+                })
+            })
+            .catch(err => console.error(err.message))
+
+    }else {
+        res.status(409).json({
+            success: false,
+            message: 'User already exists u dunky'
+        })
+    }
+});
 
 module.exports = router;

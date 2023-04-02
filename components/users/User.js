@@ -8,11 +8,13 @@ const UserSchema = new Schema({
     },
     name: {
         type: String,
+        default: 'Toto',
         required: true
     },
     lastname: {
-      type: String,
-      required: true
+        type: String,
+        default: 'Toto',
+        required: true
     },
     pictureLink: {
         type: String,
@@ -22,6 +24,11 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
+    password: {
+        type: String,
+        required: false
+    },
+
     balance: {
         type: Number,
         required: true,
