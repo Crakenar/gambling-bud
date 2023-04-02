@@ -4,6 +4,6 @@ export default axios.create({
     baseURL: "http://localhost:4001/",
     headers: {
         "Content-type": "application/json",
-        'token': CookieService.getCookie('token')
-    }
+        'token': CookieService.getCookie('token'),
+    },
 });

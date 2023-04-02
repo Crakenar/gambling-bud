@@ -52,6 +52,7 @@
 import {ref} from "vue";
 import AuthService from "@/services/AuthService";
 import type {registerInterface} from "@/Interface/AuthInterface";
+import router from "@/router";
 
 const passwordLength = ref<number>(0);
 const containsEightCharacters = ref<boolean>(false);
@@ -78,16 +79,21 @@ const checkPassword = () => {
   containsUppercase.value = /[A-Z]/.test(registerForm.value.password);
   containsSpecialCharacter.value = format.test(registerForm.value.password);
 
-  validPassword.value = containsEightCharacters.value === true &&
-      containsSpecialCharacter.value === true &&
-      containsUppercase.value === true &&
-      containsNumber.value === true &&
-      registerForm.value.password === registerForm.value.confirmPassword;
+  // validPassword.value = containsEightCharacters.value === true &&
+  //     containsSpecialCharacter.value === true &&
+  //     containsUppercase.value === true &&
+  //     containsNumber.value === true &&
+  //     registerForm.value.password === registerForm.value.confirmPassword;
+  validPassword.value = true
 }
 
 const register = () => {
   if (validPassword.value) {
-    AuthService.register(registerForm.value);
+    AuthService.register(registerForm.value).then(res => {
+      if (res.data.success) {
+        router.push({ path: '/dashboard' })
+      }
+    });
   }
 }
 </script>

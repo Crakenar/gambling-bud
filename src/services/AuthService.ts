@@ -4,13 +4,11 @@ import type {loginInterface, registerInterface} from "@/Interface/AuthInterface"
 
 class AuthService {
     login(loginForm: loginInterface) {
-        return http.post('/login', { loginForm });
+        return http.post('/login', { loginForm }, { withCredentials: true });
     }
 
     register(registerForm: registerInterface) {
-        return http.post('/register', {
-            registerForm
-        });
+        return http.post('/register', JSON.stringify(registerForm), { withCredentials: true } );
     }
 
     checkAuthenticated() {
