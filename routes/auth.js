@@ -70,43 +70,69 @@ router.get('/checkToken', cookieJwtAuth, (req, res, next) => {
     // console.log('token', token);
 });
 
-router.post('/login', (req, res) => {
-
+router.post('/login',  async (req, response, next) => {
+    const {email, password} = req.body;
+    const query = User.where({email: email});
+    let user = await User.findOne(query);
+    if (user === null) {
+        return response.status(404).json({
+            success: true,
+            message: 'No User Found',
+        })
+    }else {
+        bcrypt.compare(password, user.password, async function (err, res) {
+            if (res === true) {
+                // create jsonwebtoken and return it
+                const token = jwt.sign(
+                    user.toJSON(),
+                    process.env.JWT_SECRET, // get the secret from default.json to hash jsonwebtoken
+                    {expiresIn: process.env.JWT_EXPIRE_TIME_MINS});
+                await response.cookie("token", token, {
+                    httpOnly: false,
+                    // secure: true,
+                    // maxAge: 1000000,
+                    // signed: true
+                });
+                // res.redirect(process.env.CLIENT_URL);
+                response.status(200).json({
+                    success: true,
+                    message: 'User loggedin => go into dashboard',
+                    token: token
+                });
+                response.end();
+            } else {
+                response.status(200).json({
+                    success: true,
+                    message: 'Wrong Credentials',
+                });
+                response.end();
+            }
+        });
+    }
 });
 router.post('/register', async (req, res) => {
+    res.clearCookie('token');
     const {email, password} = req.body;
     const query = User.where({email: email});
     let user = await User.findOne(query);
     if (user === null) {
         //Hashpassword
-        bcrypt.hash(password, saltRounds)
-            .then(hash => {
+        bcrypt.genSalt(saltRounds, function(err, salt) {
+            bcrypt.hash(password, salt, function(err, hash) {
+                // Store hash in your password DB.
                 // Create new User
                 user = new User({
                     email: email,
                     password: hash,
                 });
                 user.save();
-
-                // create jsonwebtoken and return it
-                const token = jwt.sign(
-                    user.toJSON(),
-                    process.env.JWT_SECRET, // get the secret from default.json to hash jsonwebtoken
-                    { expiresIn: process.env.JWT_EXPIRE_TIME_MINS });
-                res.cookie("token", token, {
-                    httpOnly: false,
-                    // secure: true,
-                    // maxAge: 1000000,
-                    // signed: true
-                });
                 res.status(200).json({
                     success: true,
                     message: 'User registered => go into dashboard',
-                    token: token,
-                })
-            })
-            .catch(err => console.error(err.message))
-
+                    // token: token
+                });
+            });
+        });
     }else {
         res.status(409).json({
             success: false,

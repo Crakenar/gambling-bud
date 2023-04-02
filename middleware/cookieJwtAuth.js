@@ -13,11 +13,9 @@ exports.cookieJwtAuth = async (req, res, next) => {
         req.user = user;
         next();
     } catch (e) {
-        res.clearCookie('token');
         return res.json({
             success: false,
             message: 'wrong token or expired'
         })
-        // return res.redirect('/');
     }
 };
