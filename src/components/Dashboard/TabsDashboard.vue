@@ -9,15 +9,8 @@
 
 <script setup lang="ts">
 import {ref} from "vue";
+import type {TabEnum} from "@/Interface/TabInterface";
 
-interface TabInterface {
-  index: number,
-  name: string
-}
-
-interface TabEnum {
-  [key: string]: TabInterface;
-}
 const TabsEnum: TabEnum = Object.freeze({
   DASHBOARD: {
     index: 0,

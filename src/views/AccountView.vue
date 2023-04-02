@@ -7,7 +7,6 @@
         <AccountInfos/>
         <FriendList/>
       </div>
-
     </div>
   </LoadingPage>
 

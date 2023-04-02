@@ -1,9 +1,16 @@
 import http from "./http-common";
 import {useAuthenticateStore} from "@/stores/authStore";
+import type {loginInterface, registerInterface} from "@/Interface/AuthInterface";
 
 class AuthService {
-    login() {
-        return http.get('/');
+    login(loginForm: loginInterface) {
+        return http.post('/login', { loginForm });
+    }
+
+    register(registerForm: registerInterface) {
+        return http.post('/register', {
+            registerForm
+        });
     }
 
     checkAuthenticated() {
