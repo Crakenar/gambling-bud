@@ -46,6 +46,9 @@
       <!--                </p>-->
     </div>
   </transition>
+  <Snackbar v-if="accountRegistered">
+      <p class="text-green-700">Account Registered</p>
+  </Snackbar>
 </template>
 
 <script setup lang="ts">
@@ -53,6 +56,7 @@ import {ref} from "vue";
 import AuthService from "@/services/AuthService";
 import type {registerInterface} from "@/Interface/AuthInterface";
 import router from "@/router";
+import Snackbar from "@/components/Atom/Snackbar.vue";
 
 const passwordLength = ref<number>(0);
 const containsEightCharacters = ref<boolean>(false);
@@ -61,6 +65,7 @@ const containsUppercase = ref<boolean>(false);
 const containsSpecialCharacter = ref<boolean>(false);
 const validPassword = ref<boolean>(false);
 
+const accountRegistered = ref<boolean>(false);
 
 const registerForm = ref<registerInterface>({
   email: '',
@@ -71,6 +76,8 @@ const registerForm = ref<registerInterface>({
 
 const checkPassword = () => {
   passwordLength.value = registerForm.value.password.length;
+  console.log(registerForm.value.password === registerForm.value.confirmPassword)
+  // samePassword.value = registerForm.value.password === registerForm.value.confirmPassword
   const format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
 
   containsEightCharacters.value = passwordLength.value > 8;
@@ -78,19 +85,20 @@ const checkPassword = () => {
   containsNumber.value = /\d/.test(registerForm.value.password);
   containsUppercase.value = /[A-Z]/.test(registerForm.value.password);
   containsSpecialCharacter.value = format.test(registerForm.value.password);
-
   validPassword.value = containsEightCharacters.value === true &&
       containsSpecialCharacter.value === true &&
       containsUppercase.value === true &&
-      containsNumber.value === true &&
-      registerForm.value.password === registerForm.value.confirmPassword;
+      containsNumber.value === true
+      // samePassword.value === true;
 }
 
 const register = () => {
   if (validPassword.value) {
     AuthService.register(registerForm.value).then(res => {
       if (res.data.success) {
-        router.replace({ path: '/dashboard' })
+        //TODO => make popup good
+        accountRegistered.value = res.data.success
+        // router.replace({ path: '/dashboard' })
       }
     }).catch(e => {
       console.log('erreur register', e);
