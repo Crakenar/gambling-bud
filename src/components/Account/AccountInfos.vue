@@ -1,6 +1,6 @@
 <template>
   <div class="border rounded bg-gray-500 text-center">
-    <h3>
+    <h3 class="border-b h-16 flex justify-center items-center">
       Profile Information
     </h3>
   </div>
