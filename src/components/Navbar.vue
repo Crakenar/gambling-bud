@@ -8,7 +8,8 @@
       <!-- right navbar -->
       <div class="flex items-center relative">
         <Icon @click="openModal" icon="mdi:pig-variant-outline" :width="widthIcon"/>
-        <img :src="user?.pictureLink" referrerpolicy="no-referrer" class="ml-4 w-12 h-12 rounded-full shadow-lg" @click="dropDownOpen = !dropDownOpen" alt="profile picture">
+        <img v-if="user?.pictureLink" :src="user?.pictureLink" referrerpolicy="no-referrer" class="me-2 w-12 h-12 ring-4 ring-gray-300 rounded-full shadow-lg" alt="profile picture">
+        <Icon v-else class="ml-4" icon="mdi:account-circle-outline" width="65"/>
       </div>
     </div>
   </div>
