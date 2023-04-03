@@ -24,19 +24,9 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    emailVerifiedAt: {
-        type: String,
-        required: false
-    },
     password: {
         type: String,
         required: false
-    },
-
-    isAdmin: {
-        type: Boolean,
-        required: true,
-        default: false
     },
 
     balance: {
