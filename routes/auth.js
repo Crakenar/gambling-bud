@@ -69,8 +69,7 @@ router.post('/login',  async (req, response) => {
             message: 'No User Found',
         })
     }else {
-        let passwordCorrect = checkPassword(password, user.password);
-        if (passwordCorrect === true) {
+        if (checkPassword(password, user.password)) {
             await createJWT(req, response, user).then(res => {
                 return response.status(200).json({
                     success: res,
@@ -119,7 +118,7 @@ router.post('/register', async (req, response) => {
                 user.save();
                 response.status(200).json({
                     success: true,
-                    message: 'User registered => go into dashboard',
+                    message: 'User registered => notif',
                 });
             }else {
                 response.status(500).json({
