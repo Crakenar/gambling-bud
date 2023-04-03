@@ -4,8 +4,6 @@ import {useUserStore} from "@/stores/userStore";
 
 //Components
 import HomeView from '../views/HomeView.vue'
-import Dashboard from "@/components/Dashboard/Dashboard.vue";
-import DashboardView from "@/views/DashboardView.vue";
 import {NavigationEnum} from "@/Enum/NavigationEnum";
 import {useAuthenticateStore} from "@/stores/authStore";
 import {storeToRefs} from "pinia";
@@ -86,6 +84,7 @@ const router = createRouter({
   ]
 });
 
+//TODO set global loading to wait for the back end to check for the token and not showing a page for like 5ms and then redirect to home
 router.beforeEach( async (to, from, next) => {
   if (to.name != 'home') {
     await AuthService.checkAuthenticated().then(res => {
@@ -94,7 +93,6 @@ router.beforeEach( async (to, from, next) => {
       const { setUser } = userStore;
       const { user } = storeToRefs(userStore);
       const { setIsAuthenticated, checkIfAuthenticated } = authStore;
-      console.log(res.data)
       if (res.data.success) {
         if (!checkIfAuthenticated()) {
           setIsAuthenticated(true)

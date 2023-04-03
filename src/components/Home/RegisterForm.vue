@@ -82,7 +82,7 @@ const emit = defineEmits<{
 
 const checkPassword = () => {
   passwordLength.value = registerForm.value.password.length;
-  console.log(registerForm.value.password === registerForm.value.confirmPassword)
+  // console.log(registerForm.value.password === registerForm.value.confirmPassword)
   // samePassword.value = registerForm.value.password === registerForm.value.confirmPassword
   const format = /[ !@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/;
 

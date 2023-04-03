@@ -1,6 +1,7 @@
 import http from "./http-common";
 import type {loginInterface, registerInterface} from "@/Interface/AuthInterface";
 import CookieService from "@/services/CookieService";
+import router from "@/router";
 
 class AuthService {
     login(loginForm: loginInterface) {
@@ -15,7 +16,8 @@ class AuthService {
         return http.get('/checkToken', {
             headers : {
                 'token': CookieService.getCookie('token'),
-            }
+            },
+            withCredentials: true
         });
     }
 
@@ -27,7 +29,7 @@ class AuthService {
     logout() {
         return http.post('/logout', {}, { withCredentials: true }).then(res => {
             if (res.data.success){
-                location.reload();
+                router.replace({ path: '/' })
             }
         });
     }
