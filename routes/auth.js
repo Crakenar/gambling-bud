@@ -1,12 +1,9 @@
 const router = require("express").Router();
 const passport = require("passport");
-const jwt = require('jsonwebtoken');
 const {cookieJwtAuth} = require("../middleware/cookieJwtAuth");
 const User = require("../components/users/User");
-const bcrypt = require("bcryptjs")
 const {createJWT, clearCookie} = require("../service/JWTService");
-const saltRounds = 10
-
+const {checkPassword, hashPassword} = require("../service/PasswordService");
 
 router.get("/google", passport.authenticate("google", ["profile", "email"]));
 
@@ -54,7 +51,7 @@ router.post("/logout", (req, res, next) => {
     });
 });
 
-router.get('/checkToken', cookieJwtAuth, (req, res, next) => {
+router.get('/checkToken', cookieJwtAuth, (req, res) => {
     return res.json({
         success: true,
         data: req.user,
@@ -62,7 +59,7 @@ router.get('/checkToken', cookieJwtAuth, (req, res, next) => {
     });
 });
 
-router.post('/login',  async (req, response, next) => {
+router.post('/login',  async (req, response) => {
     const {email, password} = req.body;
     const query = User.where({email: email});
     let user = await User.findOne(query);
@@ -72,10 +69,11 @@ router.post('/login',  async (req, response, next) => {
             message: 'No User Found',
         })
     }else {
-        bcrypt.compare(password, user.password, async function (err, res) {
+        checkPassword(password, user.password).then(async res => {
+            console.log('ici', res);
             if (res === true) {
                 // create jsonwebtoken and return it
-                await createJWT(req,response, user).then(res => {
+                await createJWT(req, response, user).then(res => {
                     return response.status(200).json({
                         success: res,
                         message: 'logged in go to dashboard',
@@ -88,32 +86,42 @@ router.post('/login',  async (req, response, next) => {
                 });
             }
         });
+
     }
 });
-router.post('/register', async (req, res) => {
-    res.clearCookie('token');
+router.post('/register', async (req, response) => {
+    response.clearCookie('token');
     const {email, password} = req.body;
     const query = User.where({email: email});
     let user = await User.findOne(query);
     if (user === null) {
         //Hashpassword
-        bcrypt.genSalt(saltRounds, function(err, salt) {
-            bcrypt.hash(password, salt, function(err, hash) {
-                // Store hash in your password DB.
-                // Create new User
+        await hashPassword(password).then(hashPassword => {
+            if (hashPassword !== null) {
                 user = new User({
                     email: email,
-                    password: hash,
+                    password: hashPassword,
                 });
                 user.save();
-                res.status(200).json({
+                response.status(200).json({
                     success: true,
                     message: 'User registered => go into dashboard',
                 });
-            });
+            }else {
+                response.status(500).json({
+                    success: false,
+                    message: 'Password not hashed contact administrator'
+                })
+            }
+        }).catch(e => {
+            console.log('Error while bcrypt password', e);
+            response.status(500).json({
+                success: false,
+                message: 'Error while bcrypt password'
+            })
         });
     }else {
-        res.status(409).json({
+        response.status(409).json({
             success: false,
             message: 'User already exists u dunky'
         })
