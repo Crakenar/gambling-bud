@@ -1,13 +1,9 @@
 const bcrypt = require("bcryptjs")
 const saltRounds = 10;
 
-exports.checkPassword = async (password, userPassword) => {
-    let pwdCorrect = false;
-    await bcrypt.compare(password, userPassword, function (err, res) {
-        console.log('my res', res);
-        pwdCorrect = res;
-    });
-    return pwdCorrect;
+exports.checkPassword = (password, userPassword) => {
+    //wrong i do not want that C'EST BLOQUANT ENCULE
+    return bcrypt.compareSync(password, userPassword);
 }
 
 exports.hashPassword = async (password) => {

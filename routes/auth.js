@@ -69,23 +69,37 @@ router.post('/login',  async (req, response) => {
             message: 'No User Found',
         })
     }else {
-        checkPassword(password, user.password).then(async res => {
-            console.log('ici', res);
-            if (res === true) {
-                // create jsonwebtoken and return it
-                await createJWT(req, response, user).then(res => {
-                    return response.status(200).json({
-                        success: res,
-                        message: 'logged in go to dashboard',
-                    });
-                });
-            } else {
+        let passwordCorrect = checkPassword(password, user.password);
+        if (passwordCorrect === true) {
+            await createJWT(req, response, user).then(res => {
                 return response.status(200).json({
-                    success: false,
-                    message: 'Wrong Credentials',
+                    success: res,
+                    message: 'logged in go to dashboard',
                 });
-            }
-        });
+            });
+        } else {
+            return response.status(200).json({
+                success: false,
+                message: 'Wrong Credentials',
+            });
+        }
+        // await checkPassword(password, user.password).then(async res => {
+        //     console.log('ici', res);
+        //     if (res === true) {
+        //         // create jsonwebtoken and return it
+        //         await createJWT(req, response, user).then(res => {
+        //             return response.status(200).json({
+        //                 success: res,
+        //                 message: 'logged in go to dashboard',
+        //             });
+        //         });
+        //     } else {
+        //         return response.status(200).json({
+        //             success: false,
+        //             message: 'Wrong Credentials',
+        //         });
+        //     }
+        // });
 
     }
 });
