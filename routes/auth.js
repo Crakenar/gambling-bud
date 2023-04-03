@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const {cookieJwtAuth} = require("../middleware/cookieJwtAuth");
 const User = require("../components/users/User");
 const bcrypt = require("bcryptjs")
+const {createJWT, clearCookie} = require("../service/JWTService");
 const saltRounds = 10
 
 
@@ -13,19 +14,10 @@ router.get(
     "/google/callback",
     passport.authenticate("google", {
         failureRedirect: "/login/failed",
-    }), function (req, res) {
+    }), async function (req, res) {
         const user = res.req.user;
         // create jsonwebtoken and return it
-        const token = jwt.sign(
-            user.toJSON(), //needed bc of mongoose
-            process.env.JWT_SECRET, // get the secret from default.json to hash jsonwebtoken
-            { expiresIn: process.env.JWT_EXPIRE_TIME_MINS });
-        res.cookie("token", token, {
-            // httpOnly: true,
-            // secure: true,
-            // maxAge: 1000000,
-            // signed: true
-        });
+        await createJWT(req, res, user);
         res.redirect(process.env.CLIENT_URL);
     }
 );
@@ -50,9 +42,11 @@ router.get("/login/failed", (req, res) => {
 });
 
 router.post("/logout", (req, res, next) => {
-    req.logout(function(err) {
-        if (err) { return next(err); }
-        res.clearCookie('token');
+    req.logout(async function (err) {
+        if (err) {
+            return next(err);
+        }
+        await clearCookie(res);
         return res.json({
             success: true,
             message: 'Token revoked'
@@ -61,13 +55,11 @@ router.post("/logout", (req, res, next) => {
 });
 
 router.get('/checkToken', cookieJwtAuth, (req, res, next) => {
-    res.json({
+    return res.json({
         success: true,
         data: req.user,
         message: 'Token valid'
     });
-    // const { token } = req.headers
-    // console.log('token', token);
 });
 
 router.post('/login',  async (req, response, next) => {
@@ -83,29 +75,17 @@ router.post('/login',  async (req, response, next) => {
         bcrypt.compare(password, user.password, async function (err, res) {
             if (res === true) {
                 // create jsonwebtoken and return it
-                const token = jwt.sign(
-                    user.toJSON(),
-                    process.env.JWT_SECRET, // get the secret from default.json to hash jsonwebtoken
-                    {expiresIn: process.env.JWT_EXPIRE_TIME_MINS});
-                await response.cookie("token", token, {
-                    httpOnly: false,
-                    // secure: true,
-                    // maxAge: 1000000,
-                    // signed: true
+                await createJWT(req,response, user).then(res => {
+                    return response.status(200).json({
+                        success: res,
+                        message: 'logged in go to dashboard',
+                    });
                 });
-                // res.redirect(process.env.CLIENT_URL);
-                response.status(200).json({
-                    success: true,
-                    message: 'User loggedin => go into dashboard',
-                    token: token
-                });
-                response.end();
             } else {
-                response.status(200).json({
-                    success: true,
+                return response.status(200).json({
+                    success: false,
                     message: 'Wrong Credentials',
                 });
-                response.end();
             }
         });
     }
@@ -129,7 +109,6 @@ router.post('/register', async (req, res) => {
                 res.status(200).json({
                     success: true,
                     message: 'User registered => go into dashboard',
-                    // token: token
                 });
             });
         });
