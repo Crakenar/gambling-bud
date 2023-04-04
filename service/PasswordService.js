@@ -8,6 +8,5 @@ exports.checkPassword = (password, userPassword) => {
 
 exports.hashPassword = async (password) => {
     const salt = await bcrypt.genSalt(saltRounds);
-    console.log(salt, password)
     return bcrypt.hash(password, salt);
 }
