@@ -70,19 +70,6 @@ router.post('/login',  async (req, response) => {
             message: 'No User Found',
         })
     }else {
-        // if (checkPassword(password, user.password)) {
-        //     await createJWT(req, response, user).then(res => {
-        //         return response.status(200).json({
-        //             success: res,
-        //             message: 'logged in go to dashboard',
-        //         });
-        //     });
-        // } else {
-        //     return response.status(200).json({
-        //         success: false,
-        //         message: 'Wrong Credentials',
-        //     });
-        // }
         const isPasswordCorrect = await checkPassword(password, user.password);
         if (isPasswordCorrect === true) {
             // create jsonwebtoken and return it
