@@ -1,25 +1,13 @@
 const bcrypt = require("bcryptjs")
 const saltRounds = 10;
 
+//Why not using await async here ?? bc bcrpyt.compare is already an async function ?
 exports.checkPassword = (password, userPassword) => {
-    //wrong i do not want that C'EST BLOQUANT ENCULE
-    return bcrypt.compareSync(password, userPassword);
+    return bcrypt.compare(password, userPassword);
 }
 
 exports.hashPassword = async (password) => {
-    // await bcrypt.genSalt(saltRounds, async function (err, salt) {
-    //     if (err) {
-    //         console.log('Error while generating salt', err)
-    //         return null;
-    //     }
-    //     await bcrypt.hash(password, salt, function (err, hash) {
-    //         if (err) {
-    //             console.log('Error while hashing password', err)
-    //             return null;
-    //         }
-    //         return hash;
-    //     });
-    // });
-    const salt = bcrypt.genSaltSync(10);
-    return bcrypt.hashSync(password, salt);
+    const salt = await bcrypt.genSalt(saltRounds);
+    console.log(salt, password)
+    return bcrypt.hash(password, salt);
 }
