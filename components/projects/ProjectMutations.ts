@@ -1,3 +1,4 @@
+export {}
 const ProjectType = require("./ProjectSchema");
 const {GraphQLEnumType, GraphQLID, GraphQLNonNull, GraphQLString} = require("graphql");
 const Project = require("./Project");

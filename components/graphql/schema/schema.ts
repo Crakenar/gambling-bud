@@ -1,6 +1,5 @@
-const GamblerMutations = require('../../gamblers/GamblerMutations');
+export {}
 const ProjectMutations = require('../../projects/ProjectMutations');
-const GamblerQueries = require('../../gamblers/GamblerQueries');
 const ProjectQueries = require('../../projects/ProjectQueries');
 
 const { GraphQLObjectType, GraphQLSchema} = require('graphql');
@@ -8,7 +7,6 @@ const { GraphQLObjectType, GraphQLSchema} = require('graphql');
 const Query = new GraphQLObjectType({
    name: 'Query',
    fields: {
-        ...GamblerQueries,
        ...ProjectQueries
    }
 });
@@ -17,7 +15,6 @@ const Query = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
     name: 'Mutation',
     fields: {
-        ...GamblerMutations,
         ...ProjectMutations
     }
 })
