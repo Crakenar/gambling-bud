@@ -1,3 +1,4 @@
+export {}
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 const User = require("./components/users/User");

@@ -1,3 +1,5 @@
+import {UserRequestInterface, UserResponseInterface} from "../components/users/UserRequestInterface";
+import {Request, Response} from 'express';
 const router = require("express").Router();
 const passport = require("passport");
 const {cookieJwtAuth} = require("../middleware/cookieJwtAuth");
@@ -12,15 +14,15 @@ router.get(
     "/google/callback",
     passport.authenticate("google", {
         failureRedirect: "/login/failed",
-    }), async function (req, res) {
-        const user = res.req.user;
+    }), async function (req: UserRequestInterface, res: Response) {
+        const user = req.user;
         // create jsonwebtoken and return it
         await createJWT(req, res, user);
         res.redirect(process.env.CLIENT_URL);
     }
 );
 
-router.get("/login/success", (req, res) => {
+router.get("/login/success", (req: UserRequestInterface, res: Response) => {
     if (req.user) {
         res.status(200).json({
             error: false,
@@ -32,7 +34,7 @@ router.get("/login/success", (req, res) => {
     }
 });
 
-router.get("/login/failed", (req, res) => {
+router.get("/login/failed", (req: Request, res: Response) => {
     res.status(401).json({
         error: true,
         message: "Log in failure",
@@ -52,7 +54,7 @@ router.post("/logout", (req, res, next) => {
     });
 });
 
-router.get('/checkToken', cookieJwtAuth, (req, res) => {
+router.get('/checkToken', cookieJwtAuth, (req: UserRequestInterface, res: Response) => {
     return res.json({
         success: true,
         data: req.user,
@@ -60,7 +62,7 @@ router.get('/checkToken', cookieJwtAuth, (req, res) => {
     });
 });
 
-router.post('/login',  async (req, response) => {
+router.post('/login',  async (req: Request, response: Response) => {
     const {email, password} = req.body;
     const query = User.where({email: email});
     let user = await User.findOne(query);
@@ -88,7 +90,7 @@ router.post('/login',  async (req, response) => {
 
     }
 });
-router.post('/register', async (req, response) => {
+router.post('/register', async (req: Request, response: Response) => {
     response.clearCookie('token');
     const {email, password} = req.body;
     const query = User.where({email: email});
