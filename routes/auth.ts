@@ -18,7 +18,7 @@ router.get(
         const user = req.user;
         // create jsonwebtoken and return it
         await createJWT(req, res, user);
-        res.redirect(process.env.CLIENT_URL);
+        res.redirect(process.env.CLIENT_URL || '/');
     }
 );
 
@@ -41,17 +41,26 @@ router.get("/login/failed", (req: Request, res: Response) => {
     });
 });
 
-router.post("/logout", (req, res, next) => {
-    req.logout(async function (err) {
-        if (err) {
-            return next(err);
-        }
-        await clearCookie(res);
-        return res.json({
-            success: true,
-            message: 'Token revoked'
-        })
-    });
+router.post("/logout", async (req: UserRequestInterface, res: Response) => {
+    // req.logout(async function (err) {
+    //     if (err) {
+    //         return res.json({
+    //             success: false,
+    //             message: 'Error logout'
+    //         })
+    //     }
+    //     await clearCookie(res);
+    //     return res.json({
+    //         success: true,
+    //         message: 'Token revoked'
+    //     })
+    // });
+    delete req.user
+    await clearCookie(res);
+    return res.json({
+        success: true,
+        message: 'Token revoked'
+    })
 });
 
 router.get('/checkToken', cookieJwtAuth, (req: UserRequestInterface, res: Response) => {
@@ -75,7 +84,7 @@ router.post('/login',  async (req: Request, response: Response) => {
         const isPasswordCorrect = await checkPassword(password, user.password);
         if (isPasswordCorrect === true) {
             // create jsonwebtoken and return it
-            await createJWT(req, response, user).then(res => {
+            await createJWT(req, response, user.toJSON()).then((res: boolean) => {
                 return response.status(200).json({
                     success: res,
                     message: 'logged in go to dashboard',

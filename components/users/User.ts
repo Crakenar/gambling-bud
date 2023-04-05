@@ -1,10 +1,12 @@
+import {UserInterface} from "./UserInterface";
 const mongoose = require('mongoose');
+
+const model = mongoose.model;
 const Schema = mongoose.Schema;
 
 const UserSchema = new Schema({
     pseudo: {
         type: String,
-        required: false
     },
     name: {
         type: String,
@@ -41,5 +43,6 @@ const UserSchema = new Schema({
     }
 }, {timestamps: true});
 
-const User = mongoose.model('users', UserSchema);
+const User = model('users', UserSchema);
 module.exports = User;
+

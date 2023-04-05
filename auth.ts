@@ -11,7 +11,7 @@ passport.use(new GoogleStrategy({
         scope: ["profile", "email"],
         passReqToCallback: true
     },
-    async function (request, accessToken, refreshToken, profile, done) {
+    async function (request: Express.Request, accessToken: string, refreshToken: string, profile: any, done: any) {
         const query = User.where({ email: profile.email });
         let user = await User.findOne(query);
         if (user === null) {
@@ -31,10 +31,10 @@ passport.use(new GoogleStrategy({
     }
 ));
 
-passport.serializeUser((user, done) => {
+passport.serializeUser((user: Express.User, done: any) => {
    done(null, user);
 });
 
-passport.deserializeUser((user, done) => {
+passport.deserializeUser((user: Express.User , done: any) => {
     done(null, user);
 });

@@ -1,7 +1,7 @@
 import mongoose, { ConnectOptions } from "mongoose";
 const connectDB = async () => {
   await mongoose
-      .connect(process.env.MONGO_URI_DOCKER,{
+      .connect(process.env.MONGO_URI_DOCKER || 'mongodb://mongo:27017/test',{
           useNewUrlParser: true,
           // useUnifiedTopology: true,
           // useCreateIndex: true,

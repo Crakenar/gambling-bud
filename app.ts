@@ -44,7 +44,7 @@ app.use(bodyParser.json());
 app.use("/", authRoute);
 
 //connect database
-connectDB().catch(e => console.log(`Error connection Database ${e}`));
+connectDB().catch((e: Error) => console.log(`Error connection Database ${e}`));
 
 app.use('/graphql', graphqlHTTP({
     schema,
