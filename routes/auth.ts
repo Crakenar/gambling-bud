@@ -1,7 +1,6 @@
 import {UserRequestInterface, UserResponseInterface} from "../components/users/UserRequestInterface";
 import {Request, Response} from 'express';
 import {UserInterface} from "../components/users/UserInterface";
-import {IUser} from "../components/users/User";
 const router = require("express").Router();
 const passport = require("passport");
 const {cookieJwtAuth} = require("../middleware/cookieJwtAuth");
@@ -76,7 +75,7 @@ router.get('/checkToken', cookieJwtAuth, (req: UserRequestInterface, res: Respon
 router.post('/login',  async (req: Request, response: Response) => {
     const {email, password} = req.body;
     const query = User.where({email: email});
-    let user = await User.findOne(query) as IUser;
+    let user = await User.findOne(query) as UserInterface;
     if (user === null) {
         return response.status(404).json({
             success: true,
@@ -108,11 +107,16 @@ router.post('/register', async (req: Request, response: Response) => {
     if (user === null) {
        const passwordHashed = await hashPassword(password);
         if (hashPassword !== null) {
-            user = new User({
+            let user = await User.create({
                 email: email,
                 password: passwordHashed,
             });
-            user.save();
+            if (!user) {
+                response.status(500).json({
+                    success: false,
+                    message: `Error while trying to create the user with email ${email}`,
+                });
+            }
             response.status(200).json({
                 success: true,
                 message: 'User registered => notif',
