@@ -8,6 +8,7 @@ COPY package*.json ./
 
 #check if it is possible to install it only in dev environment
 RUN npm install -g nodemon
+RUN npm install -g ts-node
 
 #'npm install' bad practice => possible problems
 RUN npm ci

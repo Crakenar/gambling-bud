@@ -1,3 +1,6 @@
+import {UserRequestInterface, UserResponseInterface} from "../components/users/UserRequestInterface";
+import {Request, Response} from 'express';
+import {UserInterface} from "../components/users/UserInterface";
 const router = require("express").Router();
 const passport = require("passport");
 const {cookieJwtAuth} = require("../middleware/cookieJwtAuth");
@@ -12,15 +15,15 @@ router.get(
     "/google/callback",
     passport.authenticate("google", {
         failureRedirect: "/login/failed",
-    }), async function (req, res) {
-        const user = res.req.user;
+    }), async function (req: UserRequestInterface, res: Response) {
+        const user = req.user;
         // create jsonwebtoken and return it
         await createJWT(req, res, user);
-        res.redirect(process.env.CLIENT_URL);
+        res.redirect(process.env.CLIENT_URL || '/');
     }
 );
 
-router.get("/login/success", (req, res) => {
+router.get("/login/success", (req: UserRequestInterface, res: Response) => {
     if (req.user) {
         res.status(200).json({
             error: false,
@@ -32,27 +35,36 @@ router.get("/login/success", (req, res) => {
     }
 });
 
-router.get("/login/failed", (req, res) => {
+router.get("/login/failed", (req: Request, res: Response) => {
     res.status(401).json({
         error: true,
         message: "Log in failure",
     });
 });
 
-router.post("/logout", (req, res, next) => {
-    req.logout(async function (err) {
-        if (err) {
-            return next(err);
-        }
-        await clearCookie(res);
-        return res.json({
-            success: true,
-            message: 'Token revoked'
-        })
-    });
+router.post("/logout", async (req: UserRequestInterface, res: Response) => {
+    // req.logout(async function (err) {
+    //     if (err) {
+    //         return res.json({
+    //             success: false,
+    //             message: 'Error logout'
+    //         })
+    //     }
+    //     await clearCookie(res);
+    //     return res.json({
+    //         success: true,
+    //         message: 'Token revoked'
+    //     })
+    // });
+    delete req.user
+    await clearCookie(res);
+    return res.json({
+        success: true,
+        message: 'Token revoked'
+    })
 });
 
-router.get('/checkToken', cookieJwtAuth, (req, res) => {
+router.get('/checkToken', cookieJwtAuth, (req: UserRequestInterface, res: Response) => {
     return res.json({
         success: true,
         data: req.user,
@@ -60,10 +72,10 @@ router.get('/checkToken', cookieJwtAuth, (req, res) => {
     });
 });
 
-router.post('/login',  async (req, response) => {
+router.post('/login',  async (req: Request, response: Response) => {
     const {email, password} = req.body;
     const query = User.where({email: email});
-    let user = await User.findOne(query);
+    let user = await User.findOne(query) as UserInterface;
     if (user === null) {
         return response.status(404).json({
             success: true,
@@ -72,8 +84,7 @@ router.post('/login',  async (req, response) => {
     }else {
         const isPasswordCorrect = await checkPassword(password, user.password);
         if (isPasswordCorrect === true) {
-            // create jsonwebtoken and return it
-            await createJWT(req, response, user).then(res => {
+            await createJWT(req, response, user).then((res: boolean) => {
                 return response.status(200).json({
                     success: res,
                     message: 'logged in go to dashboard',
@@ -88,7 +99,7 @@ router.post('/login',  async (req, response) => {
 
     }
 });
-router.post('/register', async (req, response) => {
+router.post('/register', async (req: Request, response: Response) => {
     response.clearCookie('token');
     const {email, password} = req.body;
     const query = User.where({email: email});
@@ -96,11 +107,16 @@ router.post('/register', async (req, response) => {
     if (user === null) {
        const passwordHashed = await hashPassword(password);
         if (hashPassword !== null) {
-            user = new User({
+            let user = await User.create({
                 email: email,
                 password: passwordHashed,
             });
-            user.save();
+            if (!user) {
+                response.status(500).json({
+                    success: false,
+                    message: `Error while trying to create the user with email ${email}`,
+                });
+            }
             response.status(200).json({
                 success: true,
                 message: 'User registered => notif',

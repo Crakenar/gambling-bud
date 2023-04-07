@@ -1,6 +1,5 @@
+export {}
 const {GraphQLObjectType, GraphQLID, GraphQLString} = require("graphql");
-const Gambler = require('../gamblers/Gambler');
-const GamblerType = require('../gamblers/GamblerSchema');
 
 const ProjectType = new GraphQLObjectType({
     name: 'Project',
@@ -9,12 +8,12 @@ const ProjectType = new GraphQLObjectType({
         name: { type: GraphQLString },
         description: { type: GraphQLString },
         status: { type: GraphQLString },
-        client: {
-            type: GamblerType,
-            resolve(parent, args){
-                return Gambler.findById(parent.clientId)
-            }
-        }
+        // client: {
+        //     type: GamblerType,
+        //     resolve(parent, args){
+        //         return Gambler.findById(parent.clientId)
+        //     }
+        // }
     })
 });
 
