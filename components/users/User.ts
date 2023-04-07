@@ -1,10 +1,12 @@
 import {UserInterface} from "./UserInterface";
-const mongoose = require('mongoose');
-
-const model = mongoose.model;
-const Schema = mongoose.Schema;
-
-const UserSchema = new Schema({
+import mongoose, { Schema } from 'mongoose';
+// export interface IUser extends mongoose.Document {
+//     email: string;
+//     firstName: string;
+//     lastName: string;
+//     password: string;
+// }
+const UserSchema: Schema = new Schema<UserInterface>({
     pseudo: {
         type: String,
     },
@@ -18,10 +20,6 @@ const UserSchema = new Schema({
         default: 'Toto',
         required: true
     },
-    pictureLink: {
-        type: String,
-        required: false
-    },
     email: {
         type: String,
         required: true
@@ -30,19 +28,15 @@ const UserSchema = new Schema({
         type: String,
         required: false
     },
-
-    balance: {
-        type: Number,
-        required: true,
-        default: 0
-    },
-    income: {
-        type: Number,
-        required: true,
-        default: 1
-    }
 }, {timestamps: true});
 
-const User = model('users', UserSchema);
-module.exports = User;
+// const UserSchema = new Schema({
+//     email: { type: String, required: true, unique: true },
+//     password: { type: String, required: true },
+//     firstName: { type: String, required: false, default: 'Toto' },
+//     lastName: { type: String, required: false, default: 'Toto' },
+// });
 
+// Export the model and return your IUser interface
+const  User = mongoose.model<UserInterface>('User', UserSchema);
+module.exports = User;

@@ -1,16 +1,18 @@
 import {Request, Response} from "express";
 import {UserInterface} from "../components/users/UserInterface";
+import {IUser} from "../components/users/User";
 
 export{}
 const jwt = require('jsonwebtoken');
 
 
-exports.createJWT = async (req: Request, response: Response, user: UserInterface) => {
+exports.createJWT = async (req: Request, response: Response, user: IUser) => {
     try {
         const token = jwt.sign(
-            user,
+            user.toJSON(), //toJson()
             process.env.JWT_SECRET, // get the secret from default.json to hash jsonwebtoken
             {expiresIn: process.env.JWT_EXPIRE_TIME_MINS});
+        console.log(token)
         await response.cookie("token", token, {
             httpOnly: false,
             // secure: true,

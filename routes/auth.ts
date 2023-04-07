@@ -1,5 +1,7 @@
 import {UserRequestInterface, UserResponseInterface} from "../components/users/UserRequestInterface";
 import {Request, Response} from 'express';
+import {UserInterface} from "../components/users/UserInterface";
+import {IUser} from "../components/users/User";
 const router = require("express").Router();
 const passport = require("passport");
 const {cookieJwtAuth} = require("../middleware/cookieJwtAuth");
@@ -74,7 +76,7 @@ router.get('/checkToken', cookieJwtAuth, (req: UserRequestInterface, res: Respon
 router.post('/login',  async (req: Request, response: Response) => {
     const {email, password} = req.body;
     const query = User.where({email: email});
-    let user = await User.findOne(query);
+    let user = await User.findOne(query) as IUser;
     if (user === null) {
         return response.status(404).json({
             success: true,
@@ -83,8 +85,7 @@ router.post('/login',  async (req: Request, response: Response) => {
     }else {
         const isPasswordCorrect = await checkPassword(password, user.password);
         if (isPasswordCorrect === true) {
-            // create jsonwebtoken and return it
-            await createJWT(req, response, user.toJSON()).then((res: boolean) => {
+            await createJWT(req, response, user).then((res: boolean) => {
                 return response.status(200).json({
                     success: res,
                     message: 'logged in go to dashboard',
