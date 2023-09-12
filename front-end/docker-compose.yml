@@ -1,0 +1,46 @@
+<<<<<<< HEAD
+version: "3"
+
+services:
+  # MongoDB services
+  mongo:
+    container_name: mongo
+    image: mongo:latest #should we specify a specific version ?
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo:/data/db
+
+  # Node services
+  node_api:
+    container_name: api_gambling #optional
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4000"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    working_dir: /app
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+
+volumes:
+  mongo: {}
+
+=======
+version: "3.4"
+services:
+  my_frontend:
+    container_name: gambling_front
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/project
+      - /project/node_modules
+>>>>>>> 0591fb84b5177368e3967c687dad897978fc195b
